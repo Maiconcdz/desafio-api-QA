@@ -1,0 +1,37 @@
+﻿{
+  "id": "serverest-environment",
+  "name": "ServeRest Environment",
+  "values": [
+    {
+      "key": "baseUrl",
+      "value": "https://serverest.dev",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "any",
+      "enabled": true
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "any", 
+      "enabled": true
+    },
+    {
+      "key": "productId",
+      "value": "",
+      "type": "any",
+      "enabled": true
+    },
+    {
+      "key": "cartId",
+      "value": "",
+      "type": "any",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment"
+}

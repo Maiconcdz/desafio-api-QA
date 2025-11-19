@@ -1,0 +1,32 @@
+﻿{
+  "name": "desafio-api-qa",
+  "version": "1.0.0",
+  "description": "Automação de API para ServeRest com Postman e Newman",
+  "main": "newman-run.js",
+  "scripts": {
+    "test:api": "node newman-run.js",
+    
+    "test:users": "newman run collections/serverest-collection.json -e environments/serverest-environment.json --folder \"Usuários\" -r htmlextra --reporter-htmlextra-export reports/html/users-report.html",
+    
+    "test:login": "newman run collections/serverest-collection.json -e environments/serverest-environment.json --folder \"Login\" -r htmlextra --reporter-htmlextra-export reports/html/login-report.html",
+    
+    "test:products": "newman run collections/serverest-collection.json -e environments/serverest-environment.json --folder \"Produtos\" -r htmlextra --reporter-htmlextra-export reports/html/products-report.html",
+    
+    "test:carrinhos": "newman run collections/serverest-collection.json -e environments/serverest-environment.json --folder \"Carrinhos\" -r htmlextra --reporter-htmlextra-export reports/html/carrinhos-report.html",
+    
+    "test:all": "newman run collections/serverest-collection.json -e environments/serverest-environment.json -r htmlextra --reporter-htmlextra-export reports/html/full-report.html",
+    
+    "test:html": "newman run collections/serverest-collection.json -e environments/serverest-environment.json -r htmlextra --reporter-htmlextra-export reports/html/newman-report.html",
+    
+    "test:ci": "newman run collections/serverest-collection.json -e environments/serverest-environment.json -r htmlextra,cli,junit --reporter-htmlextra-export reports/html/ --reporter-junit-export reports/junit/test-results.xml",
+    
+    "test:bdd": "newman run collections/serverest-bdd-collection.json -e environments/serverest-environment.json -r htmlextra --reporter-htmlextra-export reports/html/bdd-report.html"
+  },
+  "keywords": ["api-testing", "postman", "newman", "automation", "qa"],
+  "author": "Maicon",
+  "license": "MIT",
+  "devDependencies": {
+    "newman": "^6.1.2",
+    "newman-reporter-htmlextra": "^1.23.1"
+  }
+}

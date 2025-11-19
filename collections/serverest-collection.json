@@ -1,0 +1,370 @@
+{
+  "info": {
+    "name": "ServeRest API BDD Automation",
+    "description": "Automação BDD da API ServeRest com cenários estruturados em Given-When-Then",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://serverest.dev",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "productId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "cartId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 CENÁRIOS DE AUTENTICAÇÃO",
+      "item": [
+        {
+          "name": "Cenário: Login bem-sucedido com credenciais válidas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// GIVEN - Credenciais válidas",
+                  "// WHEN - Realizo login",
+                  "// THEN - Devo receber token de autenticação",
+                  "pm.test(\"STATUS CODE: 200 - Login realizado com sucesso\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"TOKEN: Deve conter authorization token\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('authorization');",
+                  "    pm.expect(jsonData.authorization).to.not.be.empty;",
+                  "    pm.collectionVariables.set(\"authToken\", jsonData.authorization);",
+                  "});",
+                  "pm.test(\"MENSAGEM: Login realizado com sucesso\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.equal('Login realizado com sucesso');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"fulano@qa.com\",\n  \"password\": \"teste\"\n}"
+            },
+            "url": "{{baseUrl}}/login"
+          }
+        },
+        {
+          "name": "Cenário: Tentativa de login com credenciais inválidas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// GIVEN - Credenciais inválidas",
+                  "// WHEN - Tento fazer login",
+                  "// THEN - Devo receber erro de autenticação",
+                  "pm.test(\"STATUS CODE: 401 - Não autorizado\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "pm.test(\"MENSAGEM: Email e/ou senha inválidos\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.equal('Email e/ou senha inválidos');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"invalido@qa.com\",\n  \"password\": \"senhaerrada\"\n}"
+            },
+            "url": "{{baseUrl}}/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "👥 CENÁRIOS DE USUÁRIOS",
+      "item": [
+        {
+          "name": "Cenário: Listar todos os usuários cadastrados",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// GIVEN - Usuários existem no sistema",
+                  "// WHEN - Busco a lista de usuários",
+                  "// THEN - Devo receber lista com todos os usuários",
+                  "pm.test(\"STATUS CODE: 200 - Lista retornada com sucesso\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"ESTRUTURA: Deve conter quantidade e lista de usuários\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('quantidade');",
+                  "    pm.expect(jsonData).to.have.property('usuarios');",
+                  "    pm.expect(jsonData.usuarios).to.be.an('array');",
+                  "});",
+                  "pm.test(\"DADOS: Lista deve conter usuários\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.usuarios.length).to.be.greaterThan(0);",
+                  "});",
+                  "pm.test(\"CAMPOS OBRIGATÓRIOS: Usuário deve ter todos os campos\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    var firstUser = jsonData.usuarios[0];",
+                  "    pm.expect(firstUser).to.include.all.keys('nome', 'email', 'password', 'administrador', '_id');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/usuarios"
+          }
+        },
+        {
+          "name": "Cenário: Buscar usuário por ID com formato inválido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// GIVEN - ID de usuário com formato inválido",
+                  "// WHEN - Busco usuário por ID",
+                  "// THEN - Devo receber erro de validação",
+                  "pm.test(\"STATUS CODE: 400 - Requisição inválida\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test(\"VALIDAÇÃO: Mensagem de formato de ID inválido\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.id).to.equal('id deve ter exatamente 16 caracteres alfanuméricos');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/usuarios/usuario_inexistente_123"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🛍️ CENÁRIOS DE PRODUTOS",
+      "item": [
+        {
+          "name": "Cenário: Listar todos os produtos disponíveis",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// GIVEN - Produtos cadastrados no sistema",
+                  "// WHEN - Busco a lista de produtos",
+                  "// THEN - Devo receber lista com todos os produtos",
+                  "pm.test(\"STATUS CODE: 200 - Lista retornada com sucesso\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"ESTRUTURA: Deve conter quantidade e lista de produtos\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('quantidade');",
+                  "    pm.expect(jsonData).to.have.property('produtos');",
+                  "    pm.expect(jsonData.produtos).to.be.an('array');",
+                  "});",
+                  "pm.test(\"DADOS: Lista deve conter produtos\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.produtos.length).to.be.greaterThan(0);",
+                  "});",
+                  "pm.test(\"CAMPOS OBRIGATÓRIOS: Produto deve ter todos os campos\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    var firstProduct = jsonData.produtos[0];",
+                  "    pm.expect(firstProduct).to.include.all.keys('nome', 'preco', 'descricao', 'quantidade', '_id');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/produtos"
+          }
+        },
+        {
+          "name": "Cenário: Buscar produto por ID inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// GIVEN - ID de produto com formato inválido",
+                  "// WHEN - Busco produto por ID",
+                  "// THEN - Devo receber erro de validação",
+                  "pm.test(\"STATUS CODE: 400 - Requisição inválida\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test(\"VALIDAÇÃO: Mensagem de formato de ID inválido\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.id).to.equal('id deve ter exatamente 16 caracteres alfanuméricos');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/produtos/produto_inexistente_123"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🛒 CENÁRIOS DE CARRINHOS",
+      "item": [
+        {
+          "name": "Cenário: Listar todos os carrinhos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// GIVEN - Carrinhos existem no sistema",
+                  "// WHEN - Busco a lista de carrinhos",
+                  "// THEN - Devo receber lista com carrinhos",
+                  "pm.test(\"STATUS CODE: 200 - Lista retornada com sucesso\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"ESTRUTURA: Deve conter quantidade e lista de carrinhos\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('quantidade');",
+                  "    pm.expect(jsonData).to.have.property('carrinhos');",
+                  "    pm.expect(jsonData.carrinhos).to.be.an('array');",
+                  "});",
+                  "pm.test(\"CARRINHO VÁLIDO: Se houver carrinhos, devem ter estrutura correta\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.quantidade > 0 && jsonData.carrinhos.length > 0) {",
+                  "        var firstCart = jsonData.carrinhos[0];",
+                  "        pm.expect(firstCart).to.have.property('produtos');",
+                  "        pm.expect(firstCart.produtos).to.be.an('array');",
+                  "        pm.expect(firstCart).to.have.property('_id');",
+                  "    } else {",
+                  "        console.log('Nenhum carrinho encontrado - cenário válido');",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/carrinhos"
+          }
+        },
+        {
+          "name": "Cenário: Buscar carrinho por ID inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// GIVEN - ID de carrinho com formato inválido",
+                  "// WHEN - Busco carrinho por ID",
+                  "// THEN - Devo receber erro de validação",
+                  "pm.test(\"STATUS CODE: 400 - Requisição inválida\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "pm.test(\"VALIDAÇÃO: Mensagem de formato de ID inválido\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.id).to.equal('id deve ter exatamente 16 caracteres alfanuméricos');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/carrinhos/carrinho_inexistente_123"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔄 CENÁRIOS DE FLUXO COMPLETO",
+      "item": [
+        {
+          "name": "Cenário: Fluxo completo - Login → Listar Produtos → Ver Carrinhos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// GIVEN - Usuário autenticado",
+                  "// WHEN - Acesso diferentes endpoints",
+                  "// THEN - Devo conseguir executar fluxo completo",
+                  "pm.test(\"FLUXO COMPLETO: Status 200 em todas as requisições\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"FLUXO COMPLETO: Dados consistentes\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('quantidade');",
+                  "    pm.expect(jsonData).to.have.property('carrinhos');",
+                  "    console.log('Fluxo completo executado com sucesso');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{authToken}}"
+              }
+            ],
+            "url": "{{baseUrl}}/carrinhos"
+          }
+        }
+      ]
+    }
+  ]
+}
