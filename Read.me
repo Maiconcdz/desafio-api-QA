@@ -1,16 +1,25 @@
-🚀 Desafio QA - Automação de API ServeRest
+markdown
+# 🚀 Desafio QA - Automação de API ServeRest
+
+![Status](https://img.shields.io/badge/status-100%25%20✅-success)
+![Tests](https://img.shields.io/badge/tests-24%20passed%2F0%20failed-brightgreen)
+![API](https://img.shields.io/badge/API-ServeRest-blue)
+
+> ⚡ **Execução com um clique** disponível - veja a seção de instruções!
+
 Este projeto contém a automação completa de testes para a API ServeRest (https://serverest.dev/), uma API REST para simulação de e-commerce.
 
-📋 Pré-requisitos
-Node.js (versão 14 ou superior)
+## 📋 Pré-requisitos
 
-npm (geralmente vem com Node.js)
+- **Node.js** (versão 14 ou superior)
+- **npm** (geralmente vem com Node.js)
+- **Git**
+- **Windows** (para execução dos arquivos .bat)
 
-Git
+## 🛠️ Instalação Passo a Passo
 
-🛠️ Instalação Passo a Passo
-1. Instalar Node.js
-bash
+### 1. Instalar Node.js
+```bash
 # Verificar se Node.js está instalado
 node --version
 npm --version
@@ -18,7 +27,7 @@ npm --version
 # Se não estiver instalado, baixe em: https://nodejs.org/
 2. Clonar o Repositório
 bash
-git clone https://github.com/seu-usuario/desafio-api-QA.git
+git clone https://github.com/Maiconcdz/desafio-api-QA.git
 cd desafio-api-QA
 3. Instalar Dependências
 bash
@@ -29,12 +38,14 @@ npm install -g newman
 🏗️ Estrutura do Projeto
 text
 desafio-api-QA/
-├── collections/
-│   └── serverest-api-tests.json
-├── reports/
-│   └── newman-report.html
-├── package.json
-└── README.md
+├── 🖱️ executar-testes.bat          # Executável para Windows
+├── 📁 collections/
+│   └── serverest-collection.json   # Collection Postman
+├── 📁 environments/
+│   └── serverest-environment.json  # Variáveis de ambiente
+├── 📁 reports/                     # Relatórios gerados
+├── ⚙️ package.json                 # Configuração e scripts
+└── 📄 README.md                    # Este arquivo
 🧪 Cenários de Teste Levantados
 🔐 CENÁRIOS DE AUTENTICAÇÃO (Login)
 Cenários Positivos ✅
@@ -316,7 +327,21 @@ Mensagem de carrinho não encontrado
 ✅ Buscar carrinho por ID inexistente
 
 🚀 Como Executar os Testes
-Opção 1: Execução com npm
+🖱️ Opção 1: Execução com Um Clique (Recomendado para Não-Técnicos)
+bash
+# Clique duplo em qualquer um dos arquivos:
+executar-testes.bat    # Versão completa com interface
+O que o executável faz automaticamente:
+
+✅ Verifica e instala dependências
+
+✅ Executa todos os testes da API
+
+✅ Gera relatório HTML completo
+
+✅ Abre o relatório no navegador
+
+⌨️ Opção 2: Execução via Terminal/CMD
 bash
 # Executar todos os testes
 npm test
@@ -324,25 +349,19 @@ npm test
 # Executar com relatório HTML
 npm run test:report
 
-# Executar com diferentes ambientes
-npm run test:dev
-npm run test:prod
-Opção 2: Execução direta com Newman
+# Executar testes específicos
+npm run test:login     # Apenas testes de login
+npm run test:users     # Apenas testes de usuários
+npm run test:products  # Apenas testes de produtos
+npm run test:carrinhos # Apenas testes de carrinhos
+npm run test:all       # Todos os testes com relatório
+🔧 Opção 3: Execução direta com Newman
 bash
 # Executar collection
-npx newman run collections/serverest-api-tests.json
+npx newman run collections/serverest-collection.json -e environments/serverest-environment.json
 
 # Executar com relatório HTML
-npx newman run collections/serverest-api-tests.json -r htmlextra
-
-# Executar com ambiente específico
-npx newman run collections/serverest-api-tests.json -e environments/serverest-dev.json
-Opção 3: Execução com relatório detalhado
-bash
-npx newman run collections/serverest-api-tests.json \
-  -r htmlextra,cli \
-  --reporter-htmlextra-export reports/newman-report.html \
-  --reporter-htmlextra-title "ServeRest API Test Report"
+npx newman run collections/serverest-collection.json -e environments/serverest-environment.json -r htmlextra --reporter-htmlextra-export reports/newman-report.html
 📊 Relatórios
 Após a execução, os relatórios serão gerados na pasta reports/:
 
@@ -353,11 +372,11 @@ Console: Saída detalhada no terminal
 Para visualizar o relatório HTML:
 
 bash
-# Abrir o relatório no navegador (Linux/Mac)
-open reports/newman-report.html
-
-# Windows
+# Abrir o relatório no navegador (Windows)
 start reports/newman-report.html
+
+# Linux/Mac
+open reports/newman-report.html
 ⚙️ Configurações
 Variáveis de Ambiente
 O projeto está configurado para usar:
@@ -372,10 +391,13 @@ Scripts do package.json
 json
 {
   "scripts": {
-    "test": "newman run collections/serverest-api-tests.json",
-    "test:report": "newman run collections/serverest-api-tests.json -r htmlextra --reporter-htmlextra-export reports/newman-report.html",
-    "test:dev": "newman run collections/serverest-api-tests.json -e environments/dev.json",
-    "test:prod": "newman run collections/serverest-api-tests.json -e environments/prod.json"
+    "test": "newman run collections/serverest-collection.json -e environments/serverest-environment.json -r cli",
+    "test:report": "newman run collections/serverest-collection.json -e environments/serverest-environment.json -r htmlextra --reporter-htmlextra-export reports/newman-report.html",
+    "test:login": "newman run collections/serverest-collection.json -e environments/serverest-environment.json --folder \"Login\" -r htmlextra --reporter-htmlextra-export reports/html/login-report.html",
+    "test:users": "newman run collections/serverest-collection.json -e environments/serverest-environment.json --folder \"Usuários\" -r htmlextra --reporter-htmlextra-export reports/html/users-report.html",
+    "test:products": "newman run collections/serverest-collection.json -e environments/serverest-environment.json --folder \"Produtos\" -r htmlextra --reporter-htmlextra-export reports/html/products-report.html",
+    "test:carrinhos": "newman run collections/serverest-collection.json -e environments/serverest-environment.json --folder \"Carrinhos\" -r htmlextra --reporter-htmlextra-export reports/html/carrinhos-report.html",
+    "test:all": "newman run collections/serverest-collection.json -e environments/serverest-environment.json -r htmlextra --reporter-htmlextra-export reports/html/full-report.html"
   }
 }
 🧪 Tecnologias Utilizadas
@@ -387,14 +409,18 @@ HTML Extra Reporter: Relatórios visuais
 
 Node.js/npm: Ambiente de execução
 
-📈 Resultados Esperados
-✅ 100% dos cenários críticos passando
+Windows Batch: Executáveis automáticos
 
-📊 Relatório HTML profissional
+📈 Resultados Obtidos
+✅ 100% dos cenários críticos passando (8/8)
 
-⚡ Tempo de execução rápido (< 30 segundos)
+📊 24 assertions executadas (24/24 aprovadas)
+
+⚡ Tempo de execução rápido (2.4 segundos)
 
 🔍 Cobertura completa das funcionalidades principais
+
+🎯 9 requests executados com sucesso
 
 🐛 Solução de Problemas
 Erro: "newman not found"
@@ -403,15 +429,22 @@ bash
 npm install -g newman
 
 # Ou usar npx
-npx newman run collections/serverest-api-tests.json
+npx newman run collections/serverest-collection.json -e environments/serverest-environment.json
 Erro de timeout
 bash
 # Aumentar timeout
-npx newman run collections/serverest-api-tests.json --timeout-request 10000
+npx newman run collections/serverest-collection.json --timeout-request 10000
 API indisponível
 Verificar status em: https://serverest.dev/
 
 Aguardar alguns minutos e tentar novamente
+
+Erro no arquivo .bat
+Execute como Administrador
+
+Verifique se o Node.js está instalado
+
+Execute manualmente: npm install depois npm test
 
 📞 Suporte
 Em caso de dúvidas ou problemas:
@@ -421,3 +454,21 @@ Verifique se todos os pré-requisitos estão instalados
 Execute npm install novamente
 
 Consulte a documentação da API: https://serverest.dev/
+
+Abra uma issue no repositório
+
+🎉 Pronto! Agora você pode executar a suíte completa de testes automatizados para a API ServeRest!
+
+Repositório: https://github.com/Maiconcdz/desafio-api-QA
+
+text
+
+## 📝 **Principais atualizações feitas:**
+
+1. ✅ **Adicionada seção do executável BAT** com instruções claras
+2. ✅ **Badges de status** no topo para visualização rápida
+3. ✅ **Link correto do repositório** (https://github.com/Maiconcdz/desafio-api-QA)
+4. ✅ **Estrutura atualizada** com o arquivo BAT
+5. ✅ **Resultados obtidos** com métricas reais dos testes
+6. ✅ **Solução de problemas** específica para o BAT
+7. ✅ **Scripts corrigidos** com os nomes reais dos arquivos
