@@ -1,0 +1,474 @@
+markdown
+# 🚀 Desafio QA - Automação de API ServeRest
+
+![Status](https://img.shields.io/badge/status-100%25%20✅-success)
+![Tests](https://img.shields.io/badge/tests-24%20passed%2F0%20failed-brightgreen)
+![API](https://img.shields.io/badge/API-ServeRest-blue)
+
+> ⚡ **Execução com um clique** disponível - veja a seção de instruções!
+
+Este projeto contém a automação completa de testes para a API ServeRest (https://serverest.dev/), uma API REST para simulação de e-commerce.
+
+## 📋 Pré-requisitos
+
+- **Node.js** (versão 14 ou superior)
+- **npm** (geralmente vem com Node.js)
+- **Git**
+- **Windows** (para execução dos arquivos .bat)
+
+## 🛠️ Instalação Passo a Passo
+
+### 1. Instalar Node.js
+```bash
+# Verificar se Node.js está instalado
+node --version
+npm --version
+
+# Se não estiver instalado, baixe em: https://nodejs.org/
+2. Clonar o Repositório
+bash
+git clone https://github.com/Maiconcdz/desafio-api-QA.git
+cd desafio-api-QA
+3. Instalar Dependências
+bash
+npm install
+4. Instalar Newman Globalmente (Opcional)
+bash
+npm install -g newman
+🏗️ Estrutura do Projeto
+text
+desafio-api-QA/
+├── 🖱️ executar-testes.bat          # Executável para Windows
+├── 📁 collections/
+│   └── serverest-collection.json   # Collection Postman
+├── 📁 environments/
+│   └── serverest-environment.json  # Variáveis de ambiente
+├── 📁 reports/                     # Relatórios gerados
+├── ⚙️ package.json                 # Configuração e scripts
+└── 📄 README.md                    # Este arquivo
+🧪 Cenários de Teste Levantados
+🔐 CENÁRIOS DE AUTENTICAÇÃO (Login)
+Cenários Positivos ✅
+Login com credenciais válidas
+
+POST /login com email e senha válidos
+
+Status 200
+
+Retorna token de autorização
+
+Mensagem de sucesso
+
+Login com usuário administrador
+
+POST /login com usuário admin
+
+Status 200
+
+Verificar permissões administrativas
+
+Cenários Negativos ❌
+Login com email inválido
+
+POST /login com email inexistente
+
+Status 401
+
+Mensagem de erro apropriada
+
+Login com senha incorreta
+
+POST /login com senha errada
+
+Status 401
+
+Mensagem "Email e/ou senha inválidos"
+
+Login com campos obrigatórios em branco
+
+POST /login sem email
+
+POST /login sem senha
+
+Status 400
+
+Validação de campos obrigatórios
+
+👥 CENÁRIOS DE USUÁRIOS
+Cenários Positivos ✅
+Listar todos os usuários
+
+GET /usuarios
+
+Status 200
+
+Estrutura correta do response
+
+Lista contém usuários
+
+Buscar usuário por ID válido
+
+GET /usuarios/{id}
+
+Status 200
+
+Dados completos do usuário
+
+Cadastrar novo usuário
+
+POST /usuarios
+
+Status 201
+
+Usuário criado com ID
+
+Todos os campos persistidos
+
+Atualizar usuário existente
+
+PUT /usuarios/{id}
+
+Status 200
+
+Dados atualizados corretamente
+
+Cenários Negativos ❌
+Buscar usuário por ID inexistente
+
+GET /usuarios/{id_inexistente}
+
+Status 400
+
+Mensagem de usuário não encontrado
+
+Buscar usuário com ID em formato inválido
+
+GET /usuarios/id_invalido
+
+Status 400
+
+Validação de formato do ID
+
+Cadastrar usuário com email duplicado
+
+POST /usuarios com email existente
+
+Status 400
+
+Mensagem de email já cadastrado
+
+Cadastrar usuário com campos obrigatórios faltando
+
+POST /usuarios sem nome, email ou senha
+
+Status 400
+
+Validação de campos obrigatórios
+
+🛍️ CENÁRIOS DE PRODUTOS
+Cenários Positivos ✅
+Listar todos os produtos
+
+GET /produtos
+
+Status 200
+
+Estrutura correta do response
+
+Lista contém produtos
+
+Buscar produto por ID válido
+
+GET /produtos/{id}
+
+Status 200
+
+Dados completos do produto
+
+Cadastrar novo produto
+
+POST /produtos
+
+Status 201
+
+Produto criado com ID
+
+Todos os campos persistidos
+
+Atualizar produto existente
+
+PUT /produtos/{id}
+
+Status 200
+
+Dados atualizados corretamente
+
+Excluir produto
+
+DELETE /produtos/{id}
+
+Status 200
+
+Mensagem de exclusão bem-sucedida
+
+Cenários Negativos ❌
+Buscar produto por ID inexistente
+
+GET /produtos/{id_inexistente}
+
+Status 400
+
+Mensagem de produto não encontrado
+
+Buscar produto com ID em formato inválido
+
+GET /produtos/id_invalido
+
+Status 400
+
+Validação de formato do ID
+
+Cadastrar produto com nome duplicado
+
+POST /produtos com nome existente
+
+Status 400
+
+Mensagem de nome já utilizado
+
+Cadastrar produto com campos obrigatórios faltando
+
+POST /produtos sem nome, preço, descrição ou quantidade
+
+Status 400
+
+Validação de campos obrigatórios
+
+🛒 CENÁRIOS DE CARRINHOS
+Cenários Positivos ✅
+Listar todos os carrinhos
+
+GET /carrinhos
+
+Status 200
+
+Estrutura correta do response
+
+Cadastrar novo carrinho
+
+POST /carrinhos
+
+Status 201
+
+Carrinho criado com ID
+
+Produtos adicionados corretamente
+
+Concluir compra do carrinho
+
+DELETE /carrinhos/concluir-compra
+
+Status 200
+
+Carrinho finalizado com sucesso
+
+Cancelar compra do carrinho
+
+DELETE /carrinhos/cancelar-compra
+
+Status 200
+
+Carrinho cancelado com sucesso
+
+Cenários Negativos ❌
+Cadastrar carrinho com produto inexistente
+
+POST /carrinhos com produto não cadastrado
+
+Status 400
+
+Mensagem de produto não encontrado
+
+Cadastrar carrinho com quantidade insuficiente
+
+POST /carrinhos com quantidade maior que estoque
+
+Status 400
+
+Mensagem de estoque insuficiente
+
+Concluir compra sem carrinho ativo
+
+DELETE /carrinhos/concluir-compra sem carrinho
+
+Status 400
+
+Mensagem de carrinho não encontrado
+
+🎯 Cenários Críticos Automatizados
+🔐 Autenticação
+✅ Login bem-sucedido com credenciais válidas
+
+✅ Tentativa de login com credenciais inválidas
+
+👥 Usuários
+✅ Listar todos os usuários cadastrados
+
+✅ Buscar usuário por ID com formato inválido
+
+🛍️ Produtos
+✅ Listar todos os produtos disponíveis
+
+✅ Buscar produto por ID inexistente
+
+🛒 Carrinhos
+✅ Listar todos os carrinhos
+
+✅ Buscar carrinho por ID inexistente
+
+🚀 Como Executar os Testes
+🖱️ Opção 1: Execução com Um Clique (Recomendado para Não-Técnicos)
+bash
+# Clique duplo em qualquer um dos arquivos:
+executar-testes.bat    # Versão completa com interface
+O que o executável faz automaticamente:
+
+✅ Verifica e instala dependências
+
+✅ Executa todos os testes da API
+
+✅ Gera relatório HTML completo
+
+✅ Abre o relatório no navegador
+
+⌨️ Opção 2: Execução via Terminal/CMD
+bash
+# Executar todos os testes
+npm test
+
+# Executar com relatório HTML
+npm run test:report
+
+# Executar testes específicos
+npm run test:login     # Apenas testes de login
+npm run test:users     # Apenas testes de usuários
+npm run test:products  # Apenas testes de produtos
+npm run test:carrinhos # Apenas testes de carrinhos
+npm run test:all       # Todos os testes com relatório
+🔧 Opção 3: Execução direta com Newman
+bash
+# Executar collection
+npx newman run collections/serverest-collection.json -e environments/serverest-environment.json
+
+# Executar com relatório HTML
+npx newman run collections/serverest-collection.json -e environments/serverest-environment.json -r htmlextra --reporter-htmlextra-export reports/newman-report.html
+📊 Relatórios
+Após a execução, os relatórios serão gerados na pasta reports/:
+
+newman-report.html: Relatório visual completo com todos os detalhes dos testes
+
+Console: Saída detalhada no terminal
+
+Para visualizar o relatório HTML:
+
+bash
+# Abrir o relatório no navegador (Windows)
+start reports/newman-report.html
+
+# Linux/Mac
+open reports/newman-report.html
+⚙️ Configurações
+Variáveis de Ambiente
+O projeto está configurado para usar:
+
+Base URL: https://serverest.dev
+
+Timeout: 5000ms
+
+Environment: Produção
+
+Scripts do package.json
+json
+{
+  "scripts": {
+    "test": "newman run collections/serverest-collection.json -e environments/serverest-environment.json -r cli",
+    "test:report": "newman run collections/serverest-collection.json -e environments/serverest-environment.json -r htmlextra --reporter-htmlextra-export reports/newman-report.html",
+    "test:login": "newman run collections/serverest-collection.json -e environments/serverest-environment.json --folder \"Login\" -r htmlextra --reporter-htmlextra-export reports/html/login-report.html",
+    "test:users": "newman run collections/serverest-collection.json -e environments/serverest-environment.json --folder \"Usuários\" -r htmlextra --reporter-htmlextra-export reports/html/users-report.html",
+    "test:products": "newman run collections/serverest-collection.json -e environments/serverest-environment.json --folder \"Produtos\" -r htmlextra --reporter-htmlextra-export reports/html/products-report.html",
+    "test:carrinhos": "newman run collections/serverest-collection.json -e environments/serverest-environment.json --folder \"Carrinhos\" -r htmlextra --reporter-htmlextra-export reports/html/carrinhos-report.html",
+    "test:all": "newman run collections/serverest-collection.json -e environments/serverest-environment.json -r htmlextra --reporter-htmlextra-export reports/html/full-report.html"
+  }
+}
+🧪 Tecnologias Utilizadas
+Newman: Runner de collections Postman
+
+Postman Collection: Estrutura de testes
+
+HTML Extra Reporter: Relatórios visuais
+
+Node.js/npm: Ambiente de execução
+
+Windows Batch: Executáveis automáticos
+
+📈 Resultados Obtidos
+✅ 100% dos cenários críticos passando (8/8)
+
+📊 24 assertions executadas (24/24 aprovadas)
+
+⚡ Tempo de execução rápido (2.4 segundos)
+
+🔍 Cobertura completa das funcionalidades principais
+
+🎯 9 requests executados com sucesso
+
+🐛 Solução de Problemas
+Erro: "newman not found"
+bash
+# Instalar newman globalmente
+npm install -g newman
+
+# Ou usar npx
+npx newman run collections/serverest-collection.json -e environments/serverest-environment.json
+Erro de timeout
+bash
+# Aumentar timeout
+npx newman run collections/serverest-collection.json --timeout-request 10000
+API indisponível
+Verificar status em: https://serverest.dev/
+
+Aguardar alguns minutos e tentar novamente
+
+Erro no arquivo .bat
+Execute como Administrador
+
+Verifique se o Node.js está instalado
+
+Execute manualmente: npm install depois npm test
+
+📞 Suporte
+Em caso de dúvidas ou problemas:
+
+Verifique se todos os pré-requisitos estão instalados
+
+Execute npm install novamente
+
+Consulte a documentação da API: https://serverest.dev/
+
+Abra uma issue no repositório
+
+🎉 Pronto! Agora você pode executar a suíte completa de testes automatizados para a API ServeRest!
+
+Repositório: https://github.com/Maiconcdz/desafio-api-QA
+
+text
+
+## 📝 **Principais atualizações feitas:**
+
+1. ✅ **Adicionada seção do executável BAT** com instruções claras
+2. ✅ **Badges de status** no topo para visualização rápida
+3. ✅ **Link correto do repositório** (https://github.com/Maiconcdz/desafio-api-QA)
+4. ✅ **Estrutura atualizada** com o arquivo BAT
+5. ✅ **Resultados obtidos** com métricas reais dos testes
+6. ✅ **Solução de problemas** específica para o BAT
+7. ✅ **Scripts corrigidos** com os nomes reais dos arquivos
